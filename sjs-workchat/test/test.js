@@ -2,6 +2,8 @@
 
 const WorkchatAPI = require('../index');
 const assert = require("assert");
+const log4js = require('log4js');
+const logger = log4js.getLogger('debug');
 
 /*
  * 声明创建 EZLinkAPI 对象
@@ -15,10 +17,13 @@ var workchatAPI = new WorkchatAPI({
 });
 
 /*
- * 开始测试
+ * 基础接口
  */
-describe('api', function() {
-	
+describe('base', function() {
+	logger.debug(23232323);
+	logger.debug(1111111);
+	console.log(4444444);
+	return ;
 	it('oauth(callback)', function(done) {
 		
 		workchatAPI.oauth('22222', function(err, result){
@@ -27,14 +32,101 @@ describe('api', function() {
 		});
 	});
 	
-	it('signature(callback)', function(done) {
+	it('signature(url, callback)', function(done) {
 		
 		workchatAPI.signature('http://www.baidu.com', function(err, result){
 			
 			done(err, result)
 		});
 	});
+});
+
+/*
+ * 部门接口
+ */
+describe('department', function() {
 	
+	return ;
+	it('listDepartment(id, callback)', function(done) {
+		
+		workchatAPI.listDepartment(0, function(err, result){
+			
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+});
+
+/*
+ * 成员接口
+ */
+describe('user', function() {
+	
+	return ;
+	it('simplelistUser(department_id, fetch_child, callback)', function(done) {
+		
+		workchatAPI.simplelistUser(1, 0, function(err, result){
+
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+	
+	it('getUser(userid, callback)', function(done) {
+		
+		workchatAPI.createUser('ShenXu', function(err, result){
+
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+	
+	it('createUser(date, callback)', function(done) {
+		
+		workchatAPI.createUser({
+		    "userid": "zhangsan",
+		    "name": "张三",
+		    "mobile": "15913215421",
+		    "department": [1],
+		    "order":[100000001],
+		    "position": "产品经理",
+		    "enable":1,
+		    "extattr": { },
+		    "to_invite": true,
+		    "external_position": "高级产品经理",
+		    "external_profile": {
+		        "external_corp_name": "企业简称",
+		        "external_attr": []
+		    }	
+		}, function(err, result){
+
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+	
+	it('updateUser(date, callback)', function(done) {
+		
+		workchatAPI.updateUser({
+		    "userid": "ShenXu",
+		    "name": "张三"
+		}, function(err, result){
+
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+	
+	it('deleteUser(userid, callback)', function(done) {
+		
+		workchatAPI.deleteUser('ShenXu-1', function(err, result){
+
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+});
+
+/*
+ * 自定义菜单接口
+ */
+describe('menu', function() {
+	
+	return ;
 	it('createMenu(callback)', function(done) {
 		
 		workchatAPI.createMenu({
@@ -48,10 +140,25 @@ describe('api', function() {
 			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
 		});
 	});
-	
-	it('send(callback)', function(done) {
+});
+
+/*
+ * 消息接口
+ */
+describe('message', function() {
+
+	return ;
+	it('sendMessage(data, callback)', function(done) {
 		
-		workchatAPI.send('22222', '1111111', function(err, result){
+		workchatAPI.sendMessage({
+			touser: 'ShenXu',
+			msgtype: 'text',
+			agentid: '1000002',
+			text: {
+				content: '你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看 <a href="http://work.weixin.qq.com">邮件中心视频实况</a>，聪明避开排队。'
+			},
+			safe: 0
+		}, function(err, result){
 			
 			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
 		});

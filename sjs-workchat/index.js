@@ -8,6 +8,16 @@
 const API = require('./lib/common');
 
 /**
+ * 部门接口
+ */
+API.mixin(require('./lib/department'));
+
+/**
+ * 成员接口
+ */
+API.mixin(require('./lib/user'));
+
+/**
  * 自定义菜单接口
  */
 API.mixin(require('./lib/menu'));
@@ -17,4 +27,7 @@ API.mixin(require('./lib/menu'));
  */
 API.mixin(require('./lib/message'));
 
+/**
+ * 公开方法
+ */
 module.exports = API;
