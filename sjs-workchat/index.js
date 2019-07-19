@@ -28,6 +28,11 @@ API.mixin(require('./lib/menu'));
 API.mixin(require('./lib/message'));
 
 /**
+ * 回调接口
+ */
+API.mixin(require('./lib/callback'));
+
+/**
  * 公开方法
  */
 module.exports = API;

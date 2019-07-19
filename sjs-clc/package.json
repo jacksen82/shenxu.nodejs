@@ -1,0 +1,24 @@
+{
+  "name": "sjs-clc",
+  "version": "1.0.17",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "sjs-clc": "index.js"
+  },
+  "dependencies": {
+    "commander": "^2.20.0",
+    "chalk": "^1.1.3",
+    "ignore": "^5.1.2"
+  },
+  "devDependencies": {
+    "commander": "^2.20.0",
+    "chalk": "^1.1.3",
+    "ignore": "^5.1.2"
+  }
+}

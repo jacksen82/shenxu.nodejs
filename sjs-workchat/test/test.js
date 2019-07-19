@@ -20,9 +20,7 @@ var workchatAPI = new WorkchatAPI({
  * 基础接口
  */
 describe('base', function() {
-	logger.debug(23232323);
-	logger.debug(1111111);
-	console.log(4444444);
+	
 	return ;
 	it('oauth(callback)', function(done) {
 		
@@ -158,6 +156,24 @@ describe('message', function() {
 				content: '你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看 <a href="http://work.weixin.qq.com">邮件中心视频实况</a>，聪明避开排队。'
 			},
 			safe: 0
+		}, function(err, result){
+			
+			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))
+		});
+	});
+});
+
+/*
+ * 回调接口
+ */
+describe('callback', function() {
+
+	it('callback(req, res, callback)', function(done) {
+		
+		workchatAPI.callback({
+			
+		}, {
+			
 		}, function(err, result){
 			
 			done(assert.strictEqual(0, result.errcode, JSON.stringify(result)))

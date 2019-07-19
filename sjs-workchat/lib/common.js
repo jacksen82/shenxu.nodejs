@@ -53,9 +53,7 @@ var API = function(settings){
 
 /**
  * 渗入方法
- * @url {STRING}}接口地址，不含 endpoint 部分
- * @options {JSON} 参数
- * @callback {FUNCTION} 回调方法
+ * @obj {OBJECT}} 方法集合
  */
 API.mixin = function(obj){
 	
