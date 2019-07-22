@@ -143,6 +143,18 @@ API.prototype.getJSSDKTicket = function(callback){
 };
 
 /**
+ * 获取用户授权认证地址
+ * @url {STRING} 请求授权页 URL
+ */
+API.prototype.authorizeUrl = function(url){
+	
+	return 'https://open.weixin.qq.com/connect/oauth2/authorize' +
+		'?appid=' + this.settings.app_id + 
+		'&redirect_uri=' + encodeURIComponent(url) +
+		'&response_type=code&scope=snsapi_base&state=gocom#wechat_redirect';
+};
+
+/**
  * 用户授权认证方法
  * @code {STRING} 授权码
  * @callback {FUNCTION} 回调方法
@@ -155,7 +167,7 @@ API.prototype.oauth = function(code, callback){
 			method: 'GET'
 		}, callback);
 	});
-}
+};
 
 /**
  * JSSDK 授权方法

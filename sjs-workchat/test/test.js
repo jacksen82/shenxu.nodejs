@@ -21,7 +21,13 @@ var workchatAPI = new WorkchatAPI({
  */
 describe('base', function() {
 	
-	return ;
+	it('authorizeUrl(url)', function(done) {
+		
+		var authorizeUrl = workchatAPI.authorizeUrl('http://www.baidu.com');
+		
+		assert.strictEqual('', authorizeUrl, authorizeUrl);
+	});
+	
 	it('oauth(callback)', function(done) {
 		
 		workchatAPI.oauth('22222', function(err, result){
@@ -37,6 +43,7 @@ describe('base', function() {
 			done(err, result)
 		});
 	});
+	return ;
 });
 
 /*

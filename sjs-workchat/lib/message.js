@@ -31,23 +31,5 @@ module.exports = {
 				data: data
 			}, callback);
 		});
-	},
-	
-	/*
-	 * 构建文本消息
-	 */
-	buildTextMessage: function(req, content){
-		
-		var timestamp = new Date().getTime();
-		var toUserName = req.message.FromUserName;
-		var fromUserName = req.message.ToUserName;
-		
-		return `<xml>
-			<ToUserName><![CDATA[${toUserName}]]></ToUserName>
-			<FromUserName><![CDATA[${fromUserName}]]></FromUserName>
-			<CreateTime>${timestamp}</CreateTime>
-			<MsgType><![CDATA[text]]></MsgType>
-			<Content><![CDATA[${content}]]></Content>
-		</xml>`;
 	}
 };

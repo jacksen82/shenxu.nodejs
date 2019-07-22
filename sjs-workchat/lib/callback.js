@@ -65,6 +65,24 @@ const jsonToMessage = function(cryptor, timestamp, nonce, encrypt, xmlMessage){
 	</xml>`;
 };
 
+/*
+ * 构建文本消息
+ */
+const buildTextMessage = function(req, content){
+		
+	var timestamp = new Date().getTime();
+	var toUserName = req.message.FromUserName;
+	var fromUserName = req.message.ToUserName;
+	
+	return `<xml>
+		<ToUserName><![CDATA[${toUserName}]]></ToUserName>
+		<FromUserName><![CDATA[${fromUserName}]]></FromUserName>
+		<CreateTime>${timestamp}</CreateTime>
+		<MsgType><![CDATA[text]]></MsgType>
+		<Content><![CDATA[${content}]]></Content>
+	</xml>`;
+};
+
 module.exports = {
 	
 	/**
@@ -120,9 +138,13 @@ module.exports = {
 										throw new Error('-40008_BadMessage:' + __err.name);
 									} else {
 										req.message = messageToJSON(__result.xml);
+										res.reply = function(xmlString){
+											
+											res.send(jsonToMessage(cryptor, timestamp, nonce, encrypted, xmlString));
+										};
 										res.replyText = function(content){
 											
-											res.send(jsonToMessage(cryptor, timestamp, nonce, encrypted, WXMessage.buildTextMessage(req, content)));
+											res.send(jsonToMessage(cryptor, timestamp, nonce, encrypted, buildTextMessage(req, content)));
 										};
 										callback(req, res);
 									}
