@@ -60,7 +60,7 @@ var fs = require('fs');
 				var files = fs.readdirSync(dirname);
 					files.forEach(function(item){
 							
-						if (!fileignore(ignore, item)){
+						if (!fileignore(ignore, dirname + item)){
 							if (fs.statSync(dirname + item).isDirectory()){
 								enumerate(ignore, dirname + item + '\\');
 							} else {
@@ -85,6 +85,8 @@ var fs = require('fs');
 			var fileignore = function(ignore, filename){
 				
 				if (ignore){
+					filename = filename.indexOf(currentPath) > -1 ? filename.substring(currentPath.length) : filename;
+					filename = filename.charAt(0) == '\\' ? filename.substring(1) : filename;
 					return ignore.ignores(filename);
 				}
 				return false;
