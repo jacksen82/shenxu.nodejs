@@ -8,7 +8,7 @@ var fs = require('fs');
 	program
 		.version('1.0.8')
 		.description('统计代码行数')
-		.option('--exts [value]', '统计特定文件类型，以|分隔，例如：js|css|html')
+		.option('--exts [value]', '统计特定文件类型，以|分隔，例如：js,css,html')
 		.option('-c, --igc', '忽略注释行')
 		.option('-e, --ige', '忽略空行')
 		.action(function(){
@@ -20,10 +20,10 @@ var fs = require('fs');
 			var currentArgs = {
 				comment: this.igc,
 				empty: this.ige,
-				exts: (this.exts || '').replace(/^\|/,'').replace(/\|$/,'')
+				exts: (this.exts || '').replace(/\,/g,'|').replace(/^\,/,'').replace(/\,$/,'')
 			};
 			var gitfile = currentPath + '\\.gitignore';
-			
+
 			//	统计行数
 			var enumeline = function(filename){
 				
