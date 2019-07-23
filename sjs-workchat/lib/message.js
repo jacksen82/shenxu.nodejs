@@ -28,7 +28,9 @@ module.exports = {
 			
 			this.request('message/send?access_token=' + accessToken.token, {
 				method: 'POST',
-				data: data
+				data: Object.assign(data, {
+					agentid: this.settings.agent_id
+				})
 			}, callback);
 		});
 	}

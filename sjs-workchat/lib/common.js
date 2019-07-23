@@ -119,15 +119,15 @@ API.prototype.getAccessToken = function(callback){
 API.prototype.getJSSDKTicket = function(callback){
 	
 	this.getAccessToken((accessToken) => {
-		
+
 		if (this.jssdkTicket && this.jssdkTicket.ticket && this.jssdkTicket.expire>new Date().getTime()){
 			callback(this.jssdkTicket);
 		} else {
-			this.request('get_jsapi_ticket?access_token=' + this.settings.app_id, {
+			this.request('get_jsapi_ticket?access_token=' + accessToken.token, {
 				method: 'GET'
 			}, (err, result) => {
-		
-				this.request('ticket/get?access_token=' + this.settings.app_id + '&type=agent_config', {
+	
+				this.request('ticket/get?access_token=' + accessToken.token + '&type=agent_config', {
 					method: 'GET'
 				}, (_err, _result) => {
 						
@@ -177,7 +177,7 @@ API.prototype.oauth = function(code, callback){
 API.prototype.signature = function(url, callback){
 	
 	this.getJSSDKTicket((jssdkTicket) => {
-		
+
 		var timestamp = new Date().getTime();
 		var nonce = Math.random().toString(36).substr(2, 15);
 		var sha1 = crypto.createHash("sha1");

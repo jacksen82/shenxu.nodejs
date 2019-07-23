@@ -1,6 +1,6 @@
 {
   "name": "sjs-workchat",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "企业微信接口封装对象",
   "main": "index.js",
   "scripts": {

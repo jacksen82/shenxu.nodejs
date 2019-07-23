@@ -21,25 +21,25 @@ var workchatAPI = new WorkchatAPI({
  */
 describe('base', function() {
 	
-	it('authorizeUrl(url)', function(done) {
-		
-		var authorizeUrl = workchatAPI.authorizeUrl('http://www.baidu.com');
-		
-		assert.strictEqual('', authorizeUrl, authorizeUrl);
-	});
-	
-	it('oauth(callback)', function(done) {
-		
-		workchatAPI.oauth('22222', function(err, result){
-			
-			done(err, result)
-		});
-	});
+//	it('authorizeUrl(url)', function(done) {
+//		
+//		var authorizeUrl = workchatAPI.authorizeUrl('http://www.baidu.com');
+//		
+//		assert.strictEqual('', authorizeUrl, authorizeUrl);
+//	});
+//	
+//	it('oauth(callback)', function(done) {
+//		
+//		workchatAPI.oauth('22222', function(err, result){
+//			
+//			done(err, result)
+//		});
+//	});
 	
 	it('signature(url, callback)', function(done) {
 		
-		workchatAPI.signature('http://www.baidu.com', function(err, result){
-			
+		workchatAPI.signature('http://ezlink.natapp1.cc/recipe/577562d746e0487f886d3ffdb085e839/action/assign', function(err, result){
+			console.log(result);
 			done(err, result)
 		});
 	});
@@ -158,7 +158,6 @@ describe('message', function() {
 		workchatAPI.sendMessage({
 			touser: 'ShenXu',
 			msgtype: 'text',
-			agentid: '1000002',
 			text: {
 				content: '你的快递已到，请携带工卡前往邮件中心领取。\n出发前可查看 <a href="http://work.weixin.qq.com">邮件中心视频实况</a>，聪明避开排队。'
 			},
