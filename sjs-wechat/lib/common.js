@@ -1,0 +1,186 @@
+// lib/common.js
+
+/**
+ * 基础方法以及 AccessToken 缓存区
+ * @author: tianeyi
+ * date: 2019-07-17
+ */
+const crypto = require('crypto');
+const request = require('request');
+
+/*
+ * 全局  AccessToken
+ * @token {STRING} accessToken
+ */
+const AccessToken = function(token){
+	
+	return {
+		token: token, 
+		expire: new Date().getTime() + (7000 * 1000)
+	}
+};
+
+/*
+ * 全局  JSSDKTicket
+ * @ticket {STRING} ticket
+ */
+const JSSDKTicket = function(ticket){
+	
+	return {
+		ticket: ticket, 
+		expire: new Date().getTime() + (7000 * 1000)
+	}
+};
+
+/**
+ * 微信接口客户端
+ * @settings {JSON} 微信配置信息
+ * @samples 
+ * {
+ 	"token": "",
+	"app_id": "",
+	"app_secret": "",
+	"grant_type": ""
+  }
+ */
+
+var API = function(settings){
+	
+	this.settings = Object.assign({ }, settings);
+};
+
+/**
+ * 渗入方法
+ * @obj {OBJECT}} 方法集合
+ */
+API.mixin = function(obj){
+	
+	for (var key in obj) {
+		if (API.prototype.hasOwnProperty(key)) {
+			throw new Error('Don\'t allow override existed prototype method. method: ' + key);
+		} else {
+			API.prototype[key] = obj[key];
+		}
+	}
+};
+
+/**
+ * 请求接口方法
+ * @url {STRING}}接口地址，不含 endpoint 部分
+ * @options {JSON} 参数
+ * @callback {FUNCTION} 回调方法
+ */
+API.prototype.request = function (url, options, callback) {
+	
+	url = /^http/i.test(url) ? url : 'https://api.weixin.qq.com/cgi-bin/' + url;
+	options = options || {};
+
+	request({
+		url: url,
+		json: options.json || true,
+		method: options.method || 'GET',
+		headers: {
+			'content-type': 'application/json'
+		},
+		body: options.data || {}
+	}, function(err, response, body){
+		
+		typeof(callback) == 'function' && callback(err, body);
+	});
+};
+
+/**
+ * 获取 token 方法
+ * @callback {FUNCTION} 回调方法
+ */
+API.prototype.getAccessToken = function(callback){
+	
+	if (this.accessToken && this.accessToken.token && this.accessToken.expire>new Date().getTime()){
+		callback(this.accessToken);
+	} else {
+		this.request('token?grant_type=client_credential&appid=' + this.settings.app_id + '&secret=' + this.settings.app_secret, {
+			method: 'GET'
+		}, (err, result) => {
+			
+			if (err){
+				callback(this.accessToken);
+			} else {
+				callback(this.accessToken = AccessToken(result.access_token));
+			}
+		});
+	}
+};
+
+/**
+ * 获取 jssdk ticket 方法
+ * @callback {FUNCTION} 回调方法
+ */
+API.prototype.getJSSDKTicket = function(callback){
+	
+	this.getAccessToken((accessToken) => {
+
+		if (this.jssdkTicket && this.jssdkTicket.ticket && this.jssdkTicket.expire>new Date().getTime()){
+			callback(this.jssdkTicket);
+		} else {
+			this.request('ticket/getticket?access_token=' + accessToken.token + '&type=jsapi', {
+				method: 'GET'
+			}, (err, result) => {
+	
+				if (err){
+					callback(this.jssdkTicket);
+				} else {
+					callback(this.jssdkTicket = JSSDKTicket(result.ticket));
+				}
+			});
+		}
+	});		
+};
+
+/**
+ * 获取用户授权认证地址
+ * @url {STRING} 请求授权页 URL
+ */
+API.prototype.authorizeUrl = function(url){
+	
+	return 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + this.settings.app_id + '&redirect_uri=' + encodeURIComponent(url) + '&response_type=code&scope=snsapi_base&state=gocom#wechat_redirect';
+};
+
+/**
+ * 用户授权认证方法
+ * @code {STRING} 授权码
+ * @callback {FUNCTION} 回调方法
+ */
+API.prototype.oauth = function(code, callback){
+
+	this.request('https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + this.settings.app_id + '&secret=' + this.settings.app_secret + '&code=' + code + '&grant_type=authorization_code', {
+		method: 'GET'
+	}, callback);
+};
+
+/**
+ * JSSDK 授权方法
+ * @url {STRING} 页面地址
+ * @callback {FUNCTION} 回调方法
+ */
+API.prototype.signature = function(url, callback){
+	
+	this.getJSSDKTicket((jssdkTicket) => {
+
+		var timestamp = new Date().getTime();
+		var nonce = Math.random().toString(36).substr(2, 15);
+		var sha1 = crypto.createHash("sha1");
+			sha1.update('jsapi_ticket=' + jssdkTicket.ticket + '&noncestr=' + nonce + '&timestamp=' + timestamp + '&url=' + url);
+		var signature = sha1.digest("hex");
+		
+		callback(null, {
+			appId: this.settings.app_id,
+			timestamp: timestamp,
+			nonceStr: nonce,
+			url: url,
+			ticket: jssdkTicket.ticket,
+			signature: signature
+		});
+	});
+};
+
+module.exports =   API;

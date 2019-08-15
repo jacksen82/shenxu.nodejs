@@ -2,8 +2,6 @@
 
 const WorkchatAPI = require('../index');
 const assert = require("assert");
-const log4js = require('log4js');
-const logger = log4js.getLogger('debug');
 
 /*
  * 声明创建 EZLinkAPI 对象
